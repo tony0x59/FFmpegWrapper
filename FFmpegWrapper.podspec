@@ -11,5 +11,5 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '6.0'
   s.requires_arc = true
 
-  s.dependency 'FFmpeg', :git => "https://github.com/tony7day/FFmpeg-iOS"
+  s.dependency 'FFmpeg', :git => "https://github.com/tony7day/FFmpeg-iOS.git"
 end
