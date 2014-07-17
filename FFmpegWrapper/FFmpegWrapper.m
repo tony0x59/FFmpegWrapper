@@ -119,7 +119,7 @@
         }
         
         FFBitstreamFilter *bitstreamFilter = [[FFBitstreamFilter alloc] initWithFilterName:@"h264_mp4toannexb"];
-        [outputFile addBitstreamFilter:bitstreamFilter];
+        [outputFile addBitstreamFilter:bitstreamFilter forCodecId:AV_CODEC_ID_H264];
         
         // Read the input file
         BOOL continueReading = YES;

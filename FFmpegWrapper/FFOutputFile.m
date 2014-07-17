@@ -15,22 +15,22 @@ NSString const *kFFmpegOutputFormatKey = @"kFFmpegOutputFormatKey";
 
 @interface FFOutputFile()
 @property (nonatomic, strong) NSMutableArray *streams;
-@property (nonatomic, strong, readwrite) NSMutableSet *bitstreamFilters;
+@property (nonatomic, strong, readwrite) NSMutableDictionary *bitstreamFilters;
 @end
 
 @implementation FFOutputFile
 @synthesize startTime, formatContext, bitstreamFilters;
 
-- (void) addBitstreamFilter:(FFBitstreamFilter *)bitstreamFilter {
-    [bitstreamFilters addObject:bitstreamFilter];
+- (void) addBitstreamFilter:(FFBitstreamFilter *)bitstreamFilter forCodecId:(int)codecId {
+    [bitstreamFilters setObject:bitstreamFilter forKey:@(codecId)];
 }
 
-- (void) removeBitstreamFilter:(FFBitstreamFilter *)bitstreamFilter {
-    [bitstreamFilters removeObject:bitstreamFilter];
+- (void) removeBitstreamFilter:(FFBitstreamFilter *)bitstreamFilter forCodecId:(int)codecId {
+    [bitstreamFilters removeObjectForKey:@(codecId)];
 }
 
-- (NSSet*) bitstreamFilters {
-    return self.bitstreamFilters;
+- (NSDictionary*) bitstreamFilters {
+    return bitstreamFilters;
 }
 
 - (void) dealloc {
@@ -57,7 +57,7 @@ NSString const *kFFmpegOutputFormatKey = @"kFFmpegOutputFormatKey";
     if (self = [super initWithPath:path options:options]) {
         self.formatContext = [self formatContextForOutputPath:path options:options];
         self.streams = [NSMutableArray array];
-        self.bitstreamFilters = [NSMutableSet set];
+        self.bitstreamFilters = [NSMutableDictionary dictionaryWithCapacity:2];
     }
     return self;
 }
@@ -138,12 +138,11 @@ NSString const *kFFmpegOutputFormatKey = @"kFFmpegOutputFormatKey";
     
     //NSData *packetData = [NSData dataWithBytesNoCopy:packet->data length:packet->size freeWhenDone:NO];
     //NSLog(@"Org: %@", packetData);
-    if (outputCodecContext->codec_id == AV_CODEC_ID_H264) {
-        for (FFBitstreamFilter *bsf in bitstreamFilters) {
-            AVPacket newPacket = [self applyBitstreamFilter:bsf.bitstreamFilterContext packet:packet outputCodecContext:outputCodecContext];
-            av_free_packet(packet);
-            packet = &newPacket;
-        }
+    FFBitstreamFilter *bsf = self.bitstreamFilters[@(outputCodecContext->codec_id)];
+    if (bsf) {
+        AVPacket newPacket = [self applyBitstreamFilter:bsf.bitstreamFilterContext packet:packet outputCodecContext:outputCodecContext];
+        av_free_packet(packet);
+        packet = &newPacket;
         //NSData *bsfData = [NSData dataWithBytesNoCopy:packet->data length:packet->size freeWhenDone:NO];
         //NSLog(@"bsf: %@", bsfData);
     }

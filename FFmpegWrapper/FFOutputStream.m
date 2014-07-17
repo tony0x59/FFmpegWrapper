@@ -58,7 +58,6 @@
 	//st->id = 1;
 	codecContext->strict_std_compliance = FF_COMPLIANCE_UNOFFICIAL; // for native aac support
 	/* put sample parameters */
-	//codecContext->sample_fmt  = AV_SAMPLE_FMT_FLT;
 	codecContext->sample_fmt  = AV_SAMPLE_FMT_S16;
 	codecContext->time_base.den = 44100;
 	codecContext->time_base.num = 1;

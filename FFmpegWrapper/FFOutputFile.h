@@ -19,9 +19,9 @@
 - (void) addOutputStream:(FFOutputStream*)outputStream;
 
 
-- (void) addBitstreamFilter:(FFBitstreamFilter*)bitstreamFilter;
-- (void) removeBitstreamFilter:(FFBitstreamFilter*)bitstreamFilter;
-- (NSSet*) bitstreamFilters;
+- (void) addBitstreamFilter:(FFBitstreamFilter *)bitstreamFilter forCodecId:(int)codecId;
+- (void) removeBitstreamFilter:(FFBitstreamFilter*)bitstreamFilter forCodecId:(int)codecId;
+- (NSDictionary*) bitstreamFilters;
 
 
 // Must call this first
